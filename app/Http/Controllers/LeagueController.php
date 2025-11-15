@@ -19,6 +19,18 @@ class LeagueController extends Controller
 
         League::create($request->all());
 
-        return redirect('/')->with('success', 'League created!');
+        return redirect('/leagues')->with('success', 'League created!');
+    }
+
+    public function index(){
+        $leagues = League::all();
+        return view('leagues.leagues', compact('leagues'));
+    }
+
+    public function destroy(Request $request){
+        $league = League::findOrFail($request->id);
+        $league->delete();
+
+        return redirect()->route('leagues.index');
     }
 }

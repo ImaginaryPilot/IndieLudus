@@ -28,7 +28,7 @@ class LeagueController extends Controller
     }
 
     public function destroy(Request $request){
-        $league = League::findOrFail($request->id);
+        $league = League::findOrFail($request->league_id);
         $league->delete();
 
         return redirect()->route('leagues.index');

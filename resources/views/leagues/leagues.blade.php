@@ -19,7 +19,7 @@
             @endforeach
         </select>
 
-        <button type="button">Delete League</button>
+        <button type="submit">Delete League</button>
     </form>
 
     <table border="1" cellingpadding="5">

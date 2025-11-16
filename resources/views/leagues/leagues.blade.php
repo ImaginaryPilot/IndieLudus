@@ -22,7 +22,7 @@
         <button type="submit">Delete League</button>
     </form>
 
-    <table border="1" cellingpadding="5">
+    <table border="1" cellpadding="5">
         <thead>
             <tr>
                 <th>ID</th>
@@ -33,7 +33,7 @@
 
         <tbody>
             @foreach($leagues as $league)
-            <tr>
+            <tr onclick="window.location='{{ route('leagues.viewLeague', $league->id) }}' " style="cursor: pointer;">
                 <td>{{ $league->id }}</td>
                 <td>{{ $league->name }}</td>
                 <td>{{ $league->year }}</td>

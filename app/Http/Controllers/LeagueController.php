@@ -33,4 +33,9 @@ class LeagueController extends Controller
 
         return redirect()->route('leagues.index');
     }
+
+    public function show(League $league){
+        $teams = $league->teams;
+        return view('leagues.viewLeague', compact('league', 'teams'));
+    }
 }

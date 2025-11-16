@@ -5,8 +5,8 @@
 </head>
 <body>
     <h1>Welcome to IndieLudus!</h1>
-    <a href="/leagues/create">
-        <button type="button">Make League</button>
+    <a href="{{ route('leagues.index') }}">
+        <button type="button">Show Leagues</button>
     </a>
 </body>
 </html>

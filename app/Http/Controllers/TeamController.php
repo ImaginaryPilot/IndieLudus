@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\League;
+use App\Models\League\League;
 use App\Models\Team;
 
 class TeamController extends Controller
@@ -12,14 +12,29 @@ class TeamController extends Controller
         return view('teams.createTeam', compact('league'));
     }
 
-    public function store(Request $request, League $league){
-        $request->validate([
-            'name' => 'required'
+    public function store(Request $request, \App\Models\League\League $league)
+    {
+        $team = $league->teams()->create([
+            'name' => $request->name,
         ]);
 
-        $league->teams()->create($request->all());
+        // Create a league table row for this team
+        $rowData = [];
+        foreach ($league->columns as $column) {
+            if ($column->is_team_name) {
+                $rowData[$column->key_name] = $team->name;
+            } else {
+                $rowData[$column->key_name] = 0; // or default based on type
+            }
+        }
 
-        return redirect()->route('leagues.viewLeague', $league)->with('success', 'Team created!');
+        $league->rows()->create([
+            'team_id' => $team->id,
+            'data' => $rowData,
+        ]);
+
+
+        return redirect()->route('leagues.viewLeague', $league);
     }
 
     public function index(League $league){

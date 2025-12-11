@@ -8,18 +8,28 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/leagues/create', [LeagueController::class, 'create'])->name('leagues.create');
-Route::get('/leagues', [LeagueController::class, 'index'])->name('leagues.index');
-Route::post('/leagues', [LeagueController::class, 'store'])->name('leagues.store');
-Route::delete('/leagues', [LeagueController::class, 'destroy'])->name('leagues.destroy');
+Route::prefix('leagues')->group(function () {
+    Route::get('/create', [LeagueController::class, 'create'])->name('leagues.create');
+    Route::get('/', [LeagueController::class, 'index'])->name('leagues.index');
+    Route::post('/', [LeagueController::class, 'store'])->name('leagues.store');
+    Route::delete('/', [LeagueController::class, 'destroy'])->name('leagues.destroy');
+    Route::get('/{league}', [LeagueController::class, 'show'])->name('leagues.viewLeague');
 
-Route::resource('leagues', LeagueController::class);
-Route::prefix('leagues/{league}')->group(function () {
-    Route::get('/', [LeagueController::class, 'show'])->name('leagues.viewLeague');
-    Route::resource('teams', TeamController::class)->names([
-        'create' => 'createTeam',
-        'store' => 'storeTeam',
-        'index' => 'indexTeam',
-        'destroy' => 'destroyTeam'
-    ]);
+    Route::prefix('{league}/teams')->group(function () {
+        Route::get('/', [TeamController::class, 'index'])->name('teams.index');
+        Route::get('/create', [TeamController::class, 'create'])->name('teams.create');
+        Route::post('/', [TeamController::class, 'store'])->name('teams.store');
+        Route::get('/{team}', [TeamController::class, 'show'])->name('teams.show');
+        Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    });
+});
+
+Route::prefix('leagues/{league}/teams/{team}')->group(function () {
+    // Route::resource('players', PlayerController::class)->names([
+    //     'index' => 'indexPlayers',
+    //     'create' => 'createPlayer',
+    //     'store' => 'storePlayer',
+    //     'show' => 'showPlayer',
+    //     'destroy' => 'destroyPlayer',
+    // ]);
 });

@@ -6,6 +6,17 @@
 <body>
     <h1>{{ $league->name }} ({{ $league->year }})</h1>
 
+    <h2>Fixtures</h2>
+    <a href="{{ route('fixtures.index', $league) }}">
+        <button type="button">Matches</button>
+    </a> 
+
+    <a href="{{ route('fixtures.generate', $league) }}">
+        <button type="button">Generate Fixtures</button>
+    </a> 
+
+    <h2>Teams</h2>
+
     <a href="{{ route('teams.create', $league) }}">
         <button type="button">Make Team</button>
     </a> 

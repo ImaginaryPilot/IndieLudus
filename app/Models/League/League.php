@@ -25,4 +25,8 @@ class League extends Model
     public function gameweeks() {
         return $this->hasMany(Gameweek::class);
     }
+
+    public function ranking(){
+        return $this->belongsTo(LeagueTableColumn::class);
+    }
 }

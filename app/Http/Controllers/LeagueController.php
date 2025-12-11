@@ -19,6 +19,7 @@ class LeagueController extends Controller
             'year' => 'required|integer',
             'columns.*.name' => 'required|string|max:255',
             'columns.*.type' => 'required|in:integer,decimal,string,computed',
+            'ranking_column' => 'required|integer'
         ]);
 
         // Create League
@@ -32,19 +33,24 @@ class LeagueController extends Controller
             'is_team_name' => true
         ]);
 
-        // Create Table Columns
-        if($request->has('columns')){
-            $position = 1;
+        
+        $createdColumns = [];
+        $position = 1;
 
-            foreach($request->columns as $column){
-                $league->columns()->create([
-                    'name' => $column['name'],
-                    'type' => $column['type'],
-                    'key_name' => Str::uuid()->toString(),
-                    'position' => $position++
-                ]);
-            }
+        foreach($request->columns as $column){
+            $createdColumns[] = $league->columns()->create([
+                'name' => $column['name'],
+                'type' => $column['type'],
+                'key_name' => Str::uuid()->toString(),
+                'position' => $position++
+            ]);
         }
+
+        $rankingColumn = $createdColumns[$request->ranking_column];
+
+        $league->update([
+            'ranking_column_id' => $rankingColumn->id
+        ]);
 
         return redirect()->route('leagues.viewLeague', $league->id)
                         ->with('success', 'League created');

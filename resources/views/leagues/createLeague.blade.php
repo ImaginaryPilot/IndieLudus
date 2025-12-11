@@ -35,6 +35,15 @@
 
         <button type="button" onclick="addColumn()">Add Another Column</button><br><br>
 
+        <h2>Select Ranking Column</h2>
+        <p>This column determines how teams are ranked in the table.</p>
+
+        <select name="ranking_column" id="ranking_column" required>
+            <option value="">-- Select Column --</option>
+        </select>
+
+        <br><br>
+
         <button type="submit">Create League</button>
     </form>
 </body>
@@ -60,6 +69,27 @@ function addColumn() {
     container.appendChild(div);
     columnCount++;
 }
+
+
+function updateRankingDropdown() {
+    const dropdown = document.getElementById('ranking_column');
+    dropdown.innerHTML = '<option value="">-- Select Column --</option>';
+
+    for (let i = 0; i < columnCount; i++) {
+        const input = document.querySelector(`input[name="columns[${i}][name]"]`);
+        if (input && input.value.trim() !== "") {
+            dropdown.innerHTML += `<option value="${i}">${input.value}</option>`;
+        }
+    }
+}
+
+// Update ranking dropdown when column names change
+document.addEventListener('input', function(e) {
+    if (e.target.name?.includes("columns") && e.target.name?.includes("[name]")) {
+        updateRankingDropdown();
+    }
+});
+
 </script>
 
 </html>

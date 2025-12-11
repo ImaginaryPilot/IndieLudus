@@ -4,6 +4,7 @@ namespace App\Models\League;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Team;
+use App\Models\Fixture\Gameweek;
 
 class League extends Model
 {
@@ -19,5 +20,9 @@ class League extends Model
 
     public function teams(){
         return $this->hasMany(Team::class);
+    }
+
+    public function gameweeks() {
+        return $this->hasMany(Gameweek::class);
     }
 }

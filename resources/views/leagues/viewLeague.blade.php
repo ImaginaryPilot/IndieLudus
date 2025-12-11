@@ -6,17 +6,27 @@
 <body>
     <h1>{{ $league->name }} ({{ $league->year }})</h1>
 
-    <a href="{{ route('createTeam', $league) }}">
+    <h2>Fixtures</h2>
+    <a href="{{ route('fixtures.index', $league) }}">
+        <button type="button">Matches</button>
+    </a> 
+
+    <a href="{{ route('fixtures.generate', $league) }}">
+        <button type="button">Generate Fixtures</button>
+    </a> 
+
+    <h2>Teams</h2>
+
+    <a href="{{ route('teams.create', $league) }}">
         <button type="button">Make Team</button>
-    </a>
+    </a> 
 
     <div>
         @foreach($teams as $team)
-            <form action="{{ route('destroyTeam', ['league' => $league->id, 'team' => $team->id]) }}"
-                  method="POST" style="display:inline;">
+            <form action="{{ route('teams.destroy', ['league' => $league->id, 'team' => $team->id]) }}" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit">Delete {{ $team->name }}</button>
+                <button type="submit">Delete {{$team->name}}</button>
             </form>
         @endforeach
     </div>
@@ -33,7 +43,7 @@
 
         <tbody>
             @foreach($teams as $team)
-                <tr>
+                <tr onclick="window.location='{{ route('teams.show', ['league' => $league->id, 'team' => $team->id]) }}'" style="cursor:pointer;">
                     @php
                         // $rowsByTeam was prepared in controller: array team_id => data array
                         $data = $rowsByTeam[$team->id] ?? [];

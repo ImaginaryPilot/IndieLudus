@@ -10,7 +10,7 @@
         <p style="color: green">{{ session('success') }}</p>
     @endif
 
-    <form method="POST" action="{{ route('storeTeam', $league) }}">
+    <form method="POST" action="{{ route('teams.store', $league) }}">
         @csrf
         <label>Team Name:</label>
         <input type="text" name="name" required><br><br>

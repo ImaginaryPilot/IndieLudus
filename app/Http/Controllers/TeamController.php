@@ -47,4 +47,16 @@ class TeamController extends Controller
 
         return redirect()->route('leagues.viewLeague', $league)->with('success', 'Team deleted!');
     }
+
+    public function show($leagueId, $teamId)
+    {
+        $league = League::findOrFail($leagueId);
+        $team = Team::where('id', $teamId)
+                    ->where('league_id', $leagueId)
+                    ->firstOrFail();
+
+        $players = $team->players; 
+
+        return view('teams.viewTeam', compact('league', 'team', 'players'));
+    }
 }

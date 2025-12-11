@@ -18,8 +18,10 @@ Route::prefix('leagues')->group(function () {
     Route::get('/{league}', [LeagueController::class, 'show'])->name('leagues.viewLeague');
 
     Route::prefix('{league}')->group(function (){
+        Route::get('/generate-fixtures', [FixtureController::class, 'showGenerateForm'])->name('fixtures.showGenerateForm');
         Route::post('/generate-fixtures', [FixtureController::class, 'generate'])->name('fixtures.generate');
         Route::get('/matches', [FixtureController::class, 'index'])->name('fixtures.index');
+        Route::get('/matches/{match}', [FixtureController::class, 'show'])->name('fixtures.show');
 
         Route::prefix('teams')->group(function () {
             Route::get('/', [TeamController::class, 'index'])->name('teams.index');

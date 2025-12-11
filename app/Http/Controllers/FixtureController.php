@@ -21,12 +21,12 @@ class FixtureController extends Controller
 
         $gameweeks = $query->get();
 
-        return view('fixtures.index', compact('league', 'gameweeks', 'gameweekNumber'));
+        return view('fixtures.fixtures', compact('league', 'gameweeks', 'gameweekNumber'));
     }
 
     public function showGenerateForm(League $league)
     {
-        return view('fixtures.generate', compact('league'));
+        return view('fixtures.generateFixtures', compact('league'));
     }
 
     public function generate(League $league, Request $request) {
@@ -103,7 +103,7 @@ class FixtureController extends Controller
             }
         }
 
-        return redirect()->route('fixtures.index', ['league' => $league->id])->with('success', 'Fixtures generated successfully');
+        return redirect()->route('fixtures.fixtures', ['league' => $league->id])->with('success', 'Fixtures generated successfully');
     }
 
     public function show(League $league, LeagueMatch $match){
@@ -113,6 +113,6 @@ class FixtureController extends Controller
 
         $match->load('homeTeam', 'awayTeam', 'gameweek');
 
-        return view('fixtures.show', compact('league', 'match'));
+        return view('fixtures.match', compact('league', 'match'));
     }
 }

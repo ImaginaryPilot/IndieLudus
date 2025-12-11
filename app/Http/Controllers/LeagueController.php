@@ -37,7 +37,7 @@ class LeagueController extends Controller
         $createdColumns = [];
         $position = 1;
 
-        foreach($request->columns as $column){
+        foreach($request->columns as $index => $column){
             $createdColumns[] = $league->columns()->create([
                 'name' => $column['name'],
                 'type' => $column['type'],
@@ -46,11 +46,12 @@ class LeagueController extends Controller
             ]);
         }
 
-        $rankingColumn = $createdColumns[$request->ranking_column];
+        $index = $request->ranking_column;
 
-        $league->update([
-            'ranking_column_id' => $rankingColumn->id
-        ]);
+        if(isset($createdColumns[$index])){
+            $league->ranking_column_id = $createdColumns[$index]->id;
+            $league->save();
+        }
 
         return redirect()->route('leagues.viewLeague', $league->id)
                         ->with('success', 'League created');

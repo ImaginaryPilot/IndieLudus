@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('year');    
             $table->timestamps();
-            $table->foreignId('ranking_column_id')->nullable()->constrained('league_table_columns')->nullOnDelete();
+            $table->unsignedBigInteger('ranking_column_id')->nullable();
         });
     }
 

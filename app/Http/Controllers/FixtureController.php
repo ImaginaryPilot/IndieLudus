@@ -103,7 +103,7 @@ class FixtureController extends Controller
             }
         }
 
-        return redirect()->route('fixtures.fixtures', ['league' => $league->id])->with('success', 'Fixtures generated successfully');
+        return redirect()->route('fixtures.index', ['league' => $league->id])->with('success', 'Fixtures generated successfully');
     }
 
     public function show(League $league, LeagueMatch $match){
@@ -114,5 +114,19 @@ class FixtureController extends Controller
         $match->load('homeTeam', 'awayTeam', 'gameweek');
 
         return view('fixtures.match', compact('league', 'match'));
+    }
+
+    public function updateScore(League $league, LeagueMatch $match, Request $request){
+        $request->validate([
+            'home_score' => 'required|integer|min:0',
+            'away_score' => 'required|integer|min:0'
+        ]);
+
+        $match->update([
+            'home_score' => $request->home_score,
+            'away_score' => $request->away_score
+        ]);
+
+        return redirect()->route('fixtures.index', [$league->id, $match->id])->with('success', 'Score updated successfully');
     }
 }

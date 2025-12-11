@@ -10,7 +10,7 @@ use App\Models\Fixture\Gameweek;
 
 class LeagueMatch extends Model
 {
-    protected $fillable = ['league_id', 'gameweek_id', 'home_team_id', 'away_team_id'];
+    protected $fillable = ['league_id', 'gameweek_id', 'home_team_id', 'away_team_id', 'home_score', 'away_score'];
 
     public function league() { return $this->belongsTo(League::class); }
     public function gameweek() { return $this->belongsTo(Gameweek::class); }

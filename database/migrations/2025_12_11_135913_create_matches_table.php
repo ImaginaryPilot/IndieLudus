@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('gameweek_id')->constrained()->cascadeOnDelete();
             $table->foreignId('home_team_id')->constrained('teams')->cascadeOnDelete();
             $table->foreignId('away_team_id')->constrained('teams')->cascadeOnDelete();
+            $table->integer('home_score')->default(0);
+            $table->integer('away_score')->default(0);
             $table->timestamps();
         });
     }
@@ -26,6 +28,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('matches');
+        Schema::table('league_matches', function (Blueprint $table) {
+            $table->dropColumn(['home_score', 'away_score']);
+        });
     }
 };

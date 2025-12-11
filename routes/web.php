@@ -20,8 +20,12 @@ Route::prefix('leagues')->group(function () {
     Route::prefix('{league}')->group(function (){
         Route::get('/generate-fixtures', [FixtureController::class, 'showGenerateForm'])->name('fixtures.showGenerateForm');
         Route::post('/generate-fixtures', [FixtureController::class, 'generate'])->name('fixtures.generate');
-        Route::get('/matches', [FixtureController::class, 'index'])->name('fixtures.index');
-        Route::get('/matches/{match}', [FixtureController::class, 'show'])->name('fixtures.show');
+        Route::prefix('/matches')->group(function () {
+            Route::get('/', [FixtureController::class, 'index'])->name('fixtures.index');
+            Route::get('/{match}', [FixtureController::class, 'show'])->name('fixtures.show');
+            Route::post('/{match}/update-score', [FixtureController::class, 'updateScore'])->name('fixtures.updateScore');
+        });
+
 
         Route::prefix('teams')->group(function () {
             Route::get('/', [TeamController::class, 'index'])->name('teams.index');

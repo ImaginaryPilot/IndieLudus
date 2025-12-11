@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\PlayerController;
 
 Route::get('/', function () {
     return view('home');
@@ -21,15 +22,13 @@ Route::prefix('leagues')->group(function () {
         Route::post('/', [TeamController::class, 'store'])->name('teams.store');
         Route::get('/{team}', [TeamController::class, 'show'])->name('teams.show');
         Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
-    });
-});
 
-Route::prefix('leagues/{league}/teams/{team}')->group(function () {
-    // Route::resource('players', PlayerController::class)->names([
-    //     'index' => 'indexPlayers',
-    //     'create' => 'createPlayer',
-    //     'store' => 'storePlayer',
-    //     'show' => 'showPlayer',
-    //     'destroy' => 'destroyPlayer',
-    // ]);
+        Route::prefix('{team}')->group(function () {
+            Route::get('players/create', [PlayerController::class, 'create'])->name('players.create');
+            Route::post('players', [PlayerController::class, 'store'])->name('players.store');
+            Route::get('players', [PlayerController::class, 'index'])->name('players.index');
+            Route::delete('players/{player}', [PlayerController::class, 'destroy'])->name('players.destroy');
+            // Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
+        });
+    });
 });

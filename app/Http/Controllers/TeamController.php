@@ -55,6 +55,8 @@ class TeamController extends Controller
                     ->where('league_id', $leagueId)
                     ->firstOrFail();
 
-        return view('teams.viewTeam', compact('league', 'team'));
+        $players = $team->players; 
+
+        return view('teams.viewTeam', compact('league', 'team', 'players'));
     }
 }

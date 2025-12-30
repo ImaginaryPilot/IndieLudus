@@ -127,6 +127,38 @@ class FixtureController extends Controller
             'away_score' => $request->away_score
         ]);
 
-        return redirect()->route('fixtures.index', [$league->id, $match->id])->with('success', 'Score updated successfully');
+        $homeId = $match->home_team_id;
+        $awayId = $match->away_team_id;
+        $hs = $request->home_score;
+        $as = $request->away_score;
+
+        $homeRow = $league->rows()->firstOrCreate(['team_id' => $homeId]);
+        $awayRow = $league->rows()->firstOrCreate(['team_id' => $awayId]);
+
+        $home = $homeRow->data ?? [];
+        $away = $awayRow->data ?? [];
+
+        $home['points'] = $home['points'] ?? 0;
+        $away['points'] = $away['points'] ?? 0;
+
+        if ($hs > $as) {
+            $home['points'] += $league->points_win;
+            $home['wins'] = ($home['wins'] ?? 0) + 1;
+            $away['losses'] = ($away['losses'] ?? 0) + 1;
+        } elseif ($hs < $as) {
+            $away['points'] += $league->points_win;
+            $away['wins'] = ($away['wins'] ?? 0) + 1;
+            $home['losses'] = ($home['losses'] ?? 0) + 1;
+        } else {
+            $home['points'] += $league->points_draw;
+            $away['points'] += $league->points_draw;
+            $home['draws'] = ($home['draws'] ?? 0) + 1;
+            $away['draws'] = ($away['draws'] ?? 0) + 1;
+        }
+
+        $homeRow->update(['data' => $home]);
+        $awayRow->update(['data' => $away]);
+
+        return back()->with('success', 'Points updated automatically based on result.');
     }
 }

@@ -8,7 +8,7 @@ use App\Models\Fixture\Gameweek;
 
 class League extends Model
 {
-    protected $fillable = ['name', 'year'];
+    protected $fillable = ['name', 'year', 'points_win', 'points_draw', 'points_loss'];
 
     public function columns(){
         return $this->hasMany(LeagueTableColumn::class);

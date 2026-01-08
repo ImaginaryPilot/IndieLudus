@@ -127,6 +127,9 @@ class FixtureController extends Controller
             'away_score' => $request->away_score
         ]);
 
+        $rankingColumn = $league->columns()->findOrFail($league->ranking_column_id);
+        $rankingKey = $rankingColumn->key_name;
+
         $homeId = $match->home_team_id;
         $awayId = $match->away_team_id;
         $hs = $request->home_score;
@@ -138,20 +141,20 @@ class FixtureController extends Controller
         $home = $homeRow->data ?? [];
         $away = $awayRow->data ?? [];
 
-        $home['points'] = $home['points'] ?? 0;
-        $away['points'] = $away['points'] ?? 0;
+        $home[$rankingKey] = $home[$rankingKey] ?? 0;
+        $away[$rankingKey] = $away[$rankingKey] ?? 0;
 
         if ($hs > $as) {
-            $home['points'] += $league->points_win;
+            $home[$rankingKey] += $league->points_win;
             $home['wins'] = ($home['wins'] ?? 0) + 1;
             $away['losses'] = ($away['losses'] ?? 0) + 1;
         } elseif ($hs < $as) {
-            $away['points'] += $league->points_win;
+            $away[$rankingKey] += $league->points_win;
             $away['wins'] = ($away['wins'] ?? 0) + 1;
             $home['losses'] = ($home['losses'] ?? 0) + 1;
         } else {
-            $home['points'] += $league->points_draw;
-            $away['points'] += $league->points_draw;
+            $home[$rankingKey] += $league->points_draw;
+            $away[$rankingKey] += $league->points_draw;
             $home['draws'] = ($home['draws'] ?? 0) + 1;
             $away['draws'] = ($away['draws'] ?? 0) + 1;
         }

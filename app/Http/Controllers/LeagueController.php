@@ -72,22 +72,15 @@ class LeagueController extends Controller
         
     public function show(League $league)
     {
-        // load columns ordered by 'position' to preserve coordinator ordering
         $columns = $league->columns()->orderBy('position')->get();
-
-        // load teams (eager loaded)
         $teams = $league->teams()->get();
 
-        // load all rows for this league in one query and build map: team_id => data array
-        $rows = $league->rows()->get(); // returns collection of LeagueTableRow model instances
-
+        $rows = $league->rows()->get(); 
         $rowsByTeam = [];
         foreach ($rows as $row) {
-            // ensure data is array (cast in model)
             $rowsByTeam[$row->team_id] = $row->data ?? [];
         }
 
-        // pass everything to the view
         return view('leagues.viewLeague', compact('league', 'columns', 'teams', 'rowsByTeam'));
     }
 }

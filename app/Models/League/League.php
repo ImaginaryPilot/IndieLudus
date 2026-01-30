@@ -29,4 +29,8 @@ class League extends Model
     public function ranking(){
         return $this->belongsTo(LeagueTableColumn::class);
     }
+
+    public function matchTemplate(){
+        return $this->hasOne(LeagueMatchUpdateTemplate::class);
+    }
 }

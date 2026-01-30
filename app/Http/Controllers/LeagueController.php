@@ -19,11 +19,27 @@ class LeagueController extends Controller
             'year' => 'required|integer',
             'columns.*.name' => 'required|string|max:255',
             'columns.*.type' => 'required|in:integer,decimal,string,computed',
+            'columns.*.stat_key' => 'required|string',
             'ranking_column' => 'required|integer'
         ]);
 
         // Create League
         $league = League::create($request->only('name', 'year'));
+
+        $template = [];
+        foreach ($request->dataPoints as $t){
+            $key = Str::slug($t['name'], '_');
+
+            if(isset($template[$key])){
+                return back()->withErrors(["Duplicate stat name: {$t['name']}"]);
+            }
+
+            $template[$key] = 0;
+        }
+
+        $league->matchTemplate()->create([
+            'template' => $template
+        ]);
 
         $league->columns()->create([
             'name' => 'Team',       // default display
@@ -38,10 +54,13 @@ class LeagueController extends Controller
         $position = 1;
 
         foreach($request->columns as $index => $column){
+            $statKey = $column['stat_key'];
+
             $createdColumns[] = $league->columns()->create([
                 'name' => $column['name'],
                 'type' => $column['type'],
                 'key_name' => Str::uuid()->toString(),
+                'stat_key' => $statKey,
                 'position' => $position++
             ]);
         }

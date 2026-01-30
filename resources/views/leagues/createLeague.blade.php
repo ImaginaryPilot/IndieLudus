@@ -18,6 +18,21 @@
         <label>Year:</label>
         <input type="number" name="year" required><br><br>
 
+        <h2>League Match Template</h2>
+        <div id="dataPoints">
+            <div class="matchTemplate">
+                <label>Data Name:</label>
+                <input type="text" name="dataPoints[0][name]" required>
+                <label>Type:</label>
+                <select name="dataPoints[0][type]">
+                    <option value="integer">Integer</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="string">String</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" onclick="addMatchColumn()">Add More Data Points</button><br><br>
+
         <h2>League Table Columns</h2>
         <div id="columns">
             <div class="column">
@@ -29,6 +44,13 @@
                     <option value="decimal">Decimal</option>
                     <option value="string">String</option>
                     <option value="computed">Computed</option>
+                </select>
+
+                <label>Maps to match stat:</label>
+                <select name="columns[0][stat_key]" class="statMapper" required>
+                    @foreach(array_keys($league->matchTemplate?->template ?? []) as $key)
+                        <option value="{{ $key }}">{{ $key }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -50,6 +72,7 @@
 
 <script>
 let columnCount = 1;
+let matchCount = 1;
 
 function addColumn() {
     const container = document.getElementById('columns');
@@ -68,6 +91,24 @@ function addColumn() {
     `;
     container.appendChild(div);
     columnCount++;
+}
+
+function addMatchColumn() {
+    const container = document.getElementById('dataPoints');
+    const div = document.createElement('div');
+    div.classList.add('matchTemplate');
+    div.innerHTML = `
+        <label>Data Name:</label>
+        <input type="text" name="dataPoints[${matchCount}][name]" required>
+        <label>Type:</label>
+        <select name="dataPoints[${matchCount}][type]">
+            <option value="integer">Integer</option>
+            <option value="decimal">Decimal</option>
+            <option value="string">String</option>
+        </select>
+    `;
+    container.appendChild(div);
+    matchCount++;
 }
 
 

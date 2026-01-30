@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_team_name')->default(false); // Flag for the special column
             $table->enum('type', ['integer','decimal','string','computed'])->default('integer');
             $table->integer('position')->default(0); // order in table
+            $table->string('stat_key')->nullable()->after('key_name');
             $table->timestamps();
         });
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeagueTableColumn extends Model
 {
-    protected $fillable = ['league_id', 'name', 'key_name', 'type', 'position', 'is_team_name'];
+    protected $fillable = ['league_id', 'name', 'type', 'scope', 'formula'];
 
     public function league(){
         return $this->belongsTo(League::class);

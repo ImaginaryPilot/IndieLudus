@@ -3,30 +3,21 @@
 namespace App\Models\League;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Team;
-use App\Models\Fixture\Gameweek;
 
 class League extends Model
 {
-    protected $fillable = ['name', 'year', 'points_win', 'points_draw', 'points_loss'];
+    protected $fillable = ['name', 'year'];
 
-    public function columns(){
+    public function matchTemplate()
+    {
+        return $this->hasOne(MatchTemplate::class);
+    }
+
+    public function tableColumns(){
         return $this->hasMany(LeagueTableColumn::class);
     }
 
-    public function rows(){
+    public function tableRows() {
         return $this->hasMany(LeagueTableRow::class);
-    }
-
-    public function teams(){
-        return $this->hasMany(Team::class);
-    }
-
-    public function gameweeks() {
-        return $this->hasMany(Gameweek::class);
-    }
-
-    public function ranking(){
-        return $this->belongsTo(LeagueTableColumn::class);
     }
 }

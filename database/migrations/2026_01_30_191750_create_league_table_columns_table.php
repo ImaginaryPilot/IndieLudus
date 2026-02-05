@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('league_table_columns', function (Blueprint $table) {
             $table->id();
             $table->foreignId('league_id')->constrained()->onDelete('cascade');
-            $table->string('name');       // Column name shown to coordinator
-            $table->string('key_name');   // Internal key for programmatic use
-            $table->boolean('is_team_name')->default(false); // Flag for the special column
-            $table->enum('type', ['integer','decimal','string','computed'])->default('integer');
-            $table->integer('position')->default(0); // order in table
+            $table->string('name');
+            $table->enum('type', ['int','decimal'])->default('int');
+            $table->enum('scope', ['team','neutral'])->default('team');
+            $table->text('formula')->nullable(); // optional calculated column
             $table->timestamps();
         });
     }

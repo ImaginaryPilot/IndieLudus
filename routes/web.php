@@ -2,45 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeagueController;
-use App\Http\Controllers\TeamController;
-use App\Http\Controllers\PlayerController;
-use App\Http\Controllers\FixtureController;
+use App\Http\Controllers\LeagueTableController;
+use App\Http\Controllers\MatchTemplateController;
 
 Route::get('/', function () {
     return view('home');
 });
 
 Route::prefix('leagues')->group(function () {
-    Route::get('/create', [LeagueController::class, 'create'])->name('leagues.create');
-    Route::get('/', [LeagueController::class, 'index'])->name('leagues.index');
-    Route::post('/', [LeagueController::class, 'store'])->name('leagues.store');
-    Route::delete('/', [LeagueController::class, 'destroy'])->name('leagues.destroy');
-    Route::get('/{league}', [LeagueController::class, 'show'])->name('leagues.viewLeague');
+    Route::get('/', [LeagueController::class, 'generalDashboard'])->name('League.generalDashboard');
+    Route::post('/', [LeagueController::class, 'storeLeague'])->name('League.storeLeague');
+    Route::get('/register', [LeagueController::class, 'register'])->name('League.registerLeague');
 
-    Route::prefix('{league}')->group(function (){
-        Route::get('/generate-fixtures', [FixtureController::class, 'showGenerateForm'])->name('fixtures.showGenerateForm');
-        Route::post('/generate-fixtures', [FixtureController::class, 'generate'])->name('fixtures.generate');
-        Route::prefix('/matches')->group(function () {
-            Route::get('/', [FixtureController::class, 'index'])->name('fixtures.index');
-            Route::get('/{match}', [FixtureController::class, 'show'])->name('fixtures.show');
-            Route::post('/{match}/update-score', [FixtureController::class, 'updateScore'])->name('fixtures.updateScore');
-        });
-
-
-        Route::prefix('teams')->group(function () {
-            Route::get('/', [TeamController::class, 'index'])->name('teams.index');
-            Route::get('/create', [TeamController::class, 'create'])->name('teams.create');
-            Route::post('/', [TeamController::class, 'store'])->name('teams.store');
-            Route::get('/{team}', [TeamController::class, 'show'])->name('teams.show');
-            Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
-
-            Route::prefix('{team}')->group(function () {
-                Route::get('players/create', [PlayerController::class, 'create'])->name('players.create');
-                Route::post('players', [PlayerController::class, 'store'])->name('players.store');
-                Route::get('players', [PlayerController::class, 'index'])->name('players.index');
-                Route::delete('players/{player}', [PlayerController::class, 'destroy'])->name('players.destroy');
-                // Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
-            });
-        });
+    Route::prefix('{league}')->group(function () {
+        Route::get('/', [LeagueController::class, 'show'])->name('League.leagueDashboard');
+        Route::get('/match-template', [MatchTemplateController::class, 'showMatchTemplate'])->name('MatchTemplate.show');
+        Route::put('/match-template', [MatchTemplateController::class, 'updateMatchTemplate'])->name('MatchTemplate.update');
+        Route::get('/edit-table', [LeagueTableController::class, 'editTable'])->name('Table.edit');
+        Route::post('/edit-table', [LeagueTableController::class, 'updateTable'])->name('Table.update');
+        Route::get('/table', [LeagueTableController::class, 'viewTable'])->name('Table.show');
     });
 });

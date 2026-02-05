@@ -2,85 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Models\League\League;
+use App\Models\League\MatchTemplate;
+use Illuminate\Http\Request;
 
 class LeagueController extends Controller
 {
-    public function create(){
-        return view('leagues.createLeague');
+    // General dashboard
+    public function generalDashboard()
+    {
+        $leagues = League::all();
+        return view('League.generalDashboard', compact('leagues'));
     }
 
-    public function store(Request $request)
+    // Show create league form
+    public function register()
+    {
+        return view('League.registerLeague');
+    }
+
+    // Store new league
+    public function storeLeague(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'year' => 'required|integer',
-            'columns.*.name' => 'required|string|max:255',
-            'columns.*.type' => 'required|in:integer,decimal,string,computed',
-            'ranking_column' => 'required|integer'
+            'year' => 'required|int',
         ]);
 
-        // Create League
-        $league = League::create($request->only('name', 'year'));
-
-        $league->columns()->create([
-            'name' => 'Team',       // default display
-            'key_name' => Str::uuid()->toString(),
-            'type' => 'string',
-            'position' => 0,
-            'is_team_name' => true
+        $league = League::create([
+            'name' => $request->name,
+            'year' => $request->year,
         ]);
 
-        
-        $createdColumns = [];
-        $position = 1;
+        // Optionally create an empty match template
+        MatchTemplate::create([
+            'league_id' => $league->id,
+            'decider_stat_index' => 0,
+            'decider_mode' => 'higher',
+            'stats' => [], // start empty
+        ]);
 
-        foreach($request->columns as $index => $column){
-            $createdColumns[] = $league->columns()->create([
-                'name' => $column['name'],
-                'type' => $column['type'],
-                'key_name' => Str::uuid()->toString(),
-                'position' => $position++
-            ]);
-        }
-
-        $index = $request->ranking_column;
-
-        if(isset($createdColumns[$index])){
-            $league->ranking_column_id = $createdColumns[$index]->id;
-            $league->save();
-        }
-
-        return redirect()->route('leagues.viewLeague', $league->id)
-                        ->with('success', 'League created');
+        return redirect()->route('League.leagueDashboard', $league);
     }
 
-
-    public function index(){
-        $leagues = League::all();
-        return view('leagues.leagues', compact('leagues'));
-    }
-
-    public function destroy(Request $request){
-        $league = League::findOrFail($request->league_id);
-        $league->delete();
-
-        return redirect()->route('leagues.index');
-    }
-        
+    // League dashboard
     public function show(League $league)
     {
-        $columns = $league->columns()->orderBy('position')->get();
-        $teams = $league->teams()->get();
-
-        $rows = $league->rows()->get(); 
-        $rowsByTeam = [];
-        foreach ($rows as $row) {
-            $rowsByTeam[$row->team_id] = $row->data ?? [];
-        }
-
-        return view('leagues.viewLeague', compact('league', 'columns', 'teams', 'rowsByTeam'));
+        $template = $league->template;
+        return view('League.leagueDashboard', compact('league', 'template'));
     }
 }

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gameweeks', function (Blueprint $table) {
+        Schema::create('league_table_rows', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('league_id')->constrained()->cascadeOnDelete();
-            $table->integer('number');
+            $table->foreignId('league_id')->constrained()->onDelete('cascade');
+            $table->string('team_name');
+            $table->json('data')->nullable(); // key = column id, value = data point
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gameweeks');
+        Schema::dropIfExists('league_table_rows');
     }
 };

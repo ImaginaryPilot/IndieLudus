@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeagueController;
-use App\Http\Controllers\LeagueTableController;
-use App\Http\Controllers\MatchTemplateController;
 
 Route::get('/', function () {
     return view('home');
